@@ -1,3 +1,4 @@
+(function ($) {
 $.fn.hoverDelay = function(options) {
 	var defaultOptions = {
 		delayIn: 300,
@@ -25,3 +26,4 @@ $.fn.hoverDelay = function(options) {
 			);
     });
 };
+})(jQuery);
