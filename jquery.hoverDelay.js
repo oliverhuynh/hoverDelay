@@ -24,23 +24,27 @@
     return this.each(function () {
       var timeoutIn, timeoutOut;
       var $element = $(this);
+      const out = function () {
+        $(this).removeClass('hovering');
+        timeoutOut = setTimeout(function () {
+          // Now verify the event after it's really out
+          if (!$(this).hasClass('hovering')) {
+            options.mergeHandlerOut.call($element, options);
+          }
+        }.bind(this), options.delayOut);
+      };
       $element.hover(
         function () {
-          if (timeoutOut) {
-            clearTimeout(timeoutOut);
-          }
+          $(this).addClass('hovering');
           timeoutIn = setTimeout(function () {
-            options.mergeHandlerIn.call($element, options);
-          }, options.delayIn);
+            // Now verify the event after it's really in
+            if ($(this).hasClass('hovering')) {
+              out.bind($element.siblings())();
+              options.mergeHandlerIn.call($element, options);
+            }
+          }.bind(this), options.delayIn);
         },
-        function () {
-          if (timeoutIn) {
-            clearTimeout(timeoutIn);
-          }
-          timeoutOut = setTimeout(function () {
-            options.mergeHandlerOut.call($element, options);
-          }, options.delayOut);
-        }
+        out
       );
     });
   };
